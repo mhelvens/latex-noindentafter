@@ -47,7 +47,7 @@
 %
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{noindentafter}[2013/08/02 0.0.1
+\ProvidesPackage{noindentafter}[2014/11/30 0.0.2
   prevent paragraph indentation after specific environments or macros]
 %    \end{macrocode}
 %
@@ -65,10 +65,35 @@
 %
 %  We only need |etoolbox|. The definitions below can probably
 %  be rewritten not to need it, but for me it has not been
-%  worth the effort.
+%  worth the effort. Due to the modification of implemtentation, 
+%  |etoolbox| is absolutely necessary
+%  (\url{https://github.com/mhelvens/latex-noindentafter/pull/1}).
 %
 %    \begin{macrocode}
 \RequirePackage{etoolbox}
+%    \end{macrocode}
+%
+%  \noindent The package |etoolbox| provides the command
+%  |\AfterEndEnvironment| which crates a hook executed at 
+%  a very late point by the |\end| command. However, this 
+%  hook is invoked before |\ignorespaces|, which is too early 
+%  to suppress the indention after an environment. Therefore 
+%  another hook to |\end| is added with |\patchcmd| after 
+%  |\ignorespaces|. This new hook is executed last at the end 
+%  of an environment.
+%
+%    \begin{macrocode}
+\patchcmd\end{%
+  \if@ignore\@ignorefalse\ignorespaces\fi%
+}{%
+  \if@ignore\@ignorefalse\ignorespaces\fi%
+  \csuse{@noindent@#1@hook}%
+}{}{%
+  \PackageWarningNoLine{noindentafter}{%
+    Patching `\string\end' failed!\MessageBreak%
+    `\string\NoIndentAfterEnv' won't work%
+  }%
+}
 %    \end{macrocode}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,17 +107,37 @@
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % \needspace{5\baselineskip}\begin{macro}{\@NoIndentAfter}
+%
+%  \noindent This is the main part of this package. The command
+%  |\@NoIndentAfter| checks, if it's followed by an paragraph.
+%  In this case, the command |\par| is temporarily changed, so 
+%  that the following paragraph is not indented. Therefore, 
+%  |\everypar| is used. After that, the default behavior is 
+%  restored with |\@restorepar|.
+%
+%    \begin{macrocode}
+\newcommand*\@NoIndentAfter{%
+  \@ifnextchar\par{%
+    \def\par{%
+      \everypar{\setbox\z@\lastbox\everypar{}}%
+      \@restorepar%
+    }%
+  }{}%
+}
+%    \end{macrocode}
+%
+%\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% \needspace{5\baselineskip}\begin{macro}{\NoIndentAfterThis}
 %
 %  \noindent Enforce a paragraph break and suppress
 %  indentation for whatever follows.
 % 
 %    \begin{macrocode}
-\newrobustcmd*{\NoIndentAfterThis}{%
-    \par%
-    \@afterindentfalse%
-    \@afterheading%
-}
+\newrobustcmd*{\NoIndentAfterThis}{\@NoIndentAfter\par\par}
 %    \end{macrocode}
 % 
 %\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,13 +147,14 @@
   % \needspace{5\baselineskip}\begin{macro}{\NoIndentAfterEnv}
 %%% \marg{environment}\\
 %
-%  \noindent Append |\NoIndentAfterThis| to the output of
+%  \noindent Append |\@NoIndentAfter| to the output of
 %  \meta{environment}.
 % 
 %    \begin{macrocode}
-\newrobustcmd*{\NoIndentAfterEnv}[1]{%
-    \AfterEndEnvironment{#1}{\NoIndentAfterThis}%
+\newrobustcmd{\NoIndentAfterEnv}[1]{%
+  \csdef{@noindent@#1@hook}{\@NoIndentAfter}%
 }
+
 %    \end{macrocode}
 % 
 %\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,7 +169,12 @@
 % 
 %    \begin{macrocode}
 \newrobustcmd*{\NoIndentAfterCmd}[1]{%
-    \apptocmd{#1}{\NoIndentAfterThis}{}{}%
+  \apptocmd{#1}{\NoIndentAfterThis}{}{%
+    \PackageWarning{noindentafter}{%
+      Patching `\string#1' failed!\MessageBreak%
+      `\string\NoIndentAfterCmd' won't work%
+    }%
+  }%
 }
 %    \end{macrocode}
 % 
