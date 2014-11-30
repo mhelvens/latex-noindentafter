@@ -47,7 +47,7 @@
 %
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{noindentafter}[2014/11/30 0.0.2
+\ProvidesPackage{noindentafter}[2014/11/30 0.2.0
   prevent paragraph indentation after specific environments or macros]
 %    \end{macrocode}
 %
@@ -63,24 +63,30 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  We only need |etoolbox|. The definitions below can probably
-%  be rewritten not to need it, but for me it has not been
-%  worth the effort. Due to the modification of implemtentation, 
-%  |etoolbox| is absolutely necessary
-%  (\url{https://github.com/mhelvens/latex-noindentafter/pull/1}).
-%
 %    \begin{macrocode}
 \RequirePackage{etoolbox}
 %    \end{macrocode}
 %
-%  \noindent The package |etoolbox| provides the command
-%  |\AfterEndEnvironment| which crates a hook executed at 
-%  a very late point by the |\end| command. However, this 
-%  hook is invoked before |\ignorespaces|, which is too early 
-%  to suppress the indention after an environment. Therefore 
-%  another hook to |\end| is added with |\patchcmd| after 
-%  |\ignorespaces|. This new hook is executed last at the end 
-%  of an environment.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Patches}                                                         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% \needspace{5\baselineskip}\begin{macro}{\end}
+%
+%  The package |etoolbox| provides the command
+%  |\AfterEndEnvironment| which creates a hook executed at a
+%  very late point inside the |\end| command. However, this
+%  hook is still located before |\ignorespaces|, which is
+%  too early to properly suppress the indention after an
+%  environment. Therefore another hook is now added to |\end|
+%  using |\patchcmd|. This new hook puts new code at the very
+%  end.
 %
 %    \begin{macrocode}
 \patchcmd\end{%
@@ -91,12 +97,12 @@
 }{}{%
   \PackageWarningNoLine{noindentafter}{%
     Patching `\string\end' failed!\MessageBreak%
-    `\string\NoIndentAfterEnv' won't work%
+    `\string\NoIndentAfter...' commands won't work%
   }%
 }
 %    \end{macrocode}
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -105,16 +111,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % \needspace{5\baselineskip}\begin{macro}{\@NoIndentAfter}
+%%% \needspace{5\baselineskip}\begin{macro}{\@NoIndentAfter}
 %
-%  \noindent This is the main part of this package. The command
-%  |\@NoIndentAfter| checks, if it's followed by an paragraph.
-%  In this case, the command |\par| is temporarily changed, so 
-%  that the following paragraph is not indented. Therefore, 
-%  |\everypar| is used. After that, the default behavior is 
-%  restored with |\@restorepar|.
+%  \noindent This command implements the main principle
+%  behind this package. It checks whether it is followed by
+%  a paragraph. If so, the command |\par| is temporarily
+%  changed using |\everypar|, so that the following paragraph
+%  is not indented. Immediately afterwards, default paragraph
+%  behavior is restored with |\@restorepar| (from the \LaTeX{}
+%  base).
 %
 %    \begin{macrocode}
 \newcommand*\@NoIndentAfter{%
@@ -148,13 +154,12 @@
 %%% \marg{environment}\\
 %
 %  \noindent Append |\@NoIndentAfter| to the output of
-%  \meta{environment}.
+%  \meta{environment} by using the new environment hook.
 % 
 %    \begin{macrocode}
 \newrobustcmd{\NoIndentAfterEnv}[1]{%
   \csdef{@noindent@#1@hook}{\@NoIndentAfter}%
 }
-
 %    \end{macrocode}
 % 
 %\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

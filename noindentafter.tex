@@ -39,6 +39,8 @@
 
 \changes{0.0.1}{2013/08/02}
   {initial version}
+\changes{0.2.0}{2014/11/30}
+  {new implementation, fixing a spacing issue}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}                                                               %
@@ -186,9 +188,15 @@ Eventually I asked a question on \url{http://tex.stackexchange.com}:
 \end{itemize}
 
 I received two excellent answers -- one from cgnieder and one from lockstep.
-This package is based on the technique proposed by cgnieder, as it is
-simpler and more generally applicable. Still, the answer by lockstep
+This package was originally based on the technique proposed by cgnieder, as
+it is simpler and more generally applicable. Still, the answer by lockstep
 is definitely worth a read.
+
+Most recently, a better approach was implemented by tudscr to fix the spacing
+above headers:
+\begin{itemize}
+  \item \url{https://github.com/mhelvens/latex-noindentafter/pull/1}
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}                                                                 %
