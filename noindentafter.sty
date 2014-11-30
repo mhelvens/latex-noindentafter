@@ -69,6 +69,17 @@
 %
 %    \begin{macrocode}
 \RequirePackage{etoolbox}
+\patchcmd\end{%
+  \if@ignore\@ignorefalse\ignorespaces\fi%
+}{%
+  \if@ignore\@ignorefalse\ignorespaces\fi%
+  \csuse{@noindent@#1@hook}%
+}{}{%
+  \PackageWarningNoLine{noindentafter}{%
+    Patching `\string\end' failed!\MessageBreak%
+    `\string\NoIndentAfterEnv' won't work%
+  }%
+}
 %    \end{macrocode}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -81,6 +92,16 @@
 
 
 
+%    \begin{macrocode}
+\newcommand*\@NoIndentAfter{%
+  \@ifnextchar\par{%
+    \def\par{%
+      \everypar{\setbox\z@\lastbox\everypar{}}%
+      \@restorepar%
+    }%
+  }{}%
+}
+%    \end{macrocode}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% \needspace{5\baselineskip}\begin{macro}{\NoIndentAfterThis}
 %
@@ -88,11 +109,7 @@
 %  indentation for whatever follows.
 % 
 %    \begin{macrocode}
-\newrobustcmd*{\NoIndentAfterThis}{%
-    \par%
-    \@afterindentfalse%
-    \@afterheading%
-}
+\newrobustcmd*{\NoIndentAfterThis}{\@NoIndentAfter\par\par}
 %    \end{macrocode}
 % 
 %\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,9 +123,10 @@
 %  \meta{environment}.
 % 
 %    \begin{macrocode}
-\newrobustcmd*{\NoIndentAfterEnv}[1]{%
-    \AfterEndEnvironment{#1}{\NoIndentAfterThis}%
+\newrobustcmd{\NoIndentAfterEnv}[1]{%
+  \csdef{@noindent@#1@hook}{\@NoIndentAfter}%
 }
+
 %    \end{macrocode}
 % 
 %\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,7 +141,12 @@
 % 
 %    \begin{macrocode}
 \newrobustcmd*{\NoIndentAfterCmd}[1]{%
-    \apptocmd{#1}{\NoIndentAfterThis}{}{}%
+  \apptocmd{#1}{\NoIndentAfterThis}{}{%
+    \PackageWarning{noindentafter}{%
+      Patching `\string#1' failed!\MessageBreak%
+      `\string\NoIndentAfterCmd' won't work%
+    }%
+  }%
 }
 %    \end{macrocode}
 % 
