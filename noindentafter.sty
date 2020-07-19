@@ -89,7 +89,7 @@
 %  end.
 %
 %    \begin{macrocode}
-\patchcmd\end{%
+\expandafter\patchcmd\csname end \endcsname{%
   \if@ignore\@ignorefalse\ignorespaces\fi%
 }{%
   \if@ignore\@ignorefalse\ignorespaces\fi%
