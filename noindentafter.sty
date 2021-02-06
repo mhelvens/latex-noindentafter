@@ -2,7 +2,7 @@
 %                                                                              %
 %  Copyright (c) 2014 - Michiel Helvensteijn - www.mhelvens.net                %
 %                                                                              %
-%  http://latex-noindentafter.googlecode.com                                   %
+%  https://github.com/mhelvens/latex-noindentafter                             %
 %                                                                              %
 %  This work may be distributed and/or modified under the conditions           %
 %  of the LaTeX Project Public License, either version 1.3 of this             %
@@ -72,41 +72,6 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Patches}                                                         %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% \needspace{5\baselineskip}\begin{macro}{\end}
-%
-%  The package |etoolbox| provides the command
-%  |\AfterEndEnvironment| which creates a hook executed at a
-%  very late point inside the |\end| command. However, this
-%  hook is still located before |\ignorespaces|, which is
-%  too early to properly suppress the indention after an
-%  environment. Therefore another hook is now added to |\end|
-%  using |\patchcmd|. This new hook puts new code at the very
-%  end.
-%
-%    \begin{macrocode}
-\patchcmd\end{%
-  \if@ignore\@ignorefalse\ignorespaces\fi%
-}{%
-  \if@ignore\@ignorefalse\ignorespaces\fi%
-  \csuse{@noindent@#1@hook}%
-}{}{%
-  \PackageWarningNoLine{noindentafter}{%
-    Patching `\string\end' failed!\MessageBreak%
-    `\string\NoIndentAfter...' commands won't work%
-  }%
-}
-%    \end{macrocode}
-%
-%\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Macros}                                                          %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -124,12 +89,37 @@
 %
 %    \begin{macrocode}
 \newcommand*\@NoIndentAfter{%
-  \@ifnextchar\par{%
+  \kernel@ifnextchar\par{%
+    \par%
     \def\par{%
       \everypar{\setbox\z@\lastbox\everypar{}}%
       \@restorepar%
     }%
   }{}%
+}
+%    \end{macrocode}
+%
+%\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% \needspace{5\baselineskip}\begin{macro}{\@NoIndentAfterEnv}
+%
+%  \noindent This command is used for hooking into the ending
+%  routine of an environment at the latest possible point after
+%  |\ignorespaces|. It is heavily inspired by David Carlisle
+%  (\url{https://tex.stackexchange.com/a/179034/38481}) and 
+%  uses a delimited argument in order to apply |\@NoIndentAfter|
+%  last. It is invoked through the hook |\AfterEndEnvironment| 
+%  provided by package package |etoolbox| and leaves everything 
+%  between its invocation and |\ignorespaces\fi| at the very end
+%  of command |\end| unchanged---even additonal material given
+%  through the same hook---and finally executes |\@NoIndentAfter|
+%
+%    \begin{macrocode}
+\newcommand*\@NoIndentAfterEnv{}
+\def\@NoIndentAfterEnv#1\ignorespaces\fi{%
+  #1\ignorespaces\fi\@NoIndentAfter%
 }
 %    \end{macrocode}
 %
@@ -143,7 +133,7 @@
 %  indentation for whatever follows.
 % 
 %    \begin{macrocode}
-\newrobustcmd*{\NoIndentAfterThis}{\@NoIndentAfter\par\par}
+\newrobustcmd*\NoIndentAfterThis{\@NoIndentAfter\par}
 %    \end{macrocode}
 % 
 %\end{macro}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -151,14 +141,15 @@
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % \needspace{5\baselineskip}\begin{macro}{\NoIndentAfterEnv}
-%%% \marg{environment}\\
+%%% \marg{environment}\par\medskip
 %
-%  \noindent Append |\@NoIndentAfter| to the output of
-%  \meta{environment} by using the new environment hook.
+%  \noindent Append |\@NoIndentAfterEnv| to the output of
+%  \meta{environment} by using the environment hook.
+%  
 % 
 %    \begin{macrocode}
-\newrobustcmd{\NoIndentAfterEnv}[1]{%
-  \csdef{@noindent@#1@hook}{\@NoIndentAfter}%
+\newcommand*\NoIndentAfterEnv[1]{%
+  \AfterEndEnvironment{#1}{\@NoIndentAfterEnv}%
 }
 %    \end{macrocode}
 % 
@@ -167,14 +158,14 @@
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % \needspace{5\baselineskip}\begin{macro}{\NoIndentAfterCmd}
-%%% \marg{command}\\
+%%% \marg{command}\par\medskip
 %
 %  \noindent Append |\NoIndentAfterThis| to the output of
 %  \meta{command}.
 % 
 %    \begin{macrocode}
-\newrobustcmd*{\NoIndentAfterCmd}[1]{%
-  \apptocmd{#1}{\NoIndentAfterThis}{}{%
+\newcommand*\NoIndentAfterCmd[1]{%
+  \apptocmd#1{\NoIndentAfterThis}{}{%
     \PackageWarning{noindentafter}{%
       Patching `\string#1' failed!\MessageBreak%
       `\string\NoIndentAfterCmd' won't work%
