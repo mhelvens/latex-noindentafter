@@ -27,7 +27,6 @@
 \ProvidesPackage{noindentafter-dry}
   [2013/10/11 convenience macros for reusing LaTeX code]
 
-\RequirePackage{filecontents}
 \RequirePackage{xparse}
 \RequirePackage{etoolbox}
 \RequirePackage{withargs}
@@ -40,7 +39,7 @@
   \withargs [\uniquecsname] [#2] {%
     \newenvironment{#1}{%
       \begingroup%
-      \@tempswafalse\filec@ntents{##1.tmp}%
+      \filecontents[noheader,force]{##1.tmp}%
     }{%
       \endfilecontents%
       \endgroup%

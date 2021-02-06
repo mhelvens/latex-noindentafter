@@ -2,7 +2,7 @@
 %                                                                              %
 %  Copyright (c) 2014 - Michiel Helvensteijn - www.mhelvens.net                %
 %                                                                              %
-%  http://latex-noindentafter.googlecode.com                                   %
+%  https://github.com/mhelvens/latex-noindentafter
 %                                                                              %
 %  This work may be distributed and/or modified under the                      %
 %  conditions of the LaTeX Project Public License, either                      %
@@ -30,7 +30,7 @@
 \NoIndentAfterCmd{\describemacro}
 
 \moretexcs{%
-	NoIndentAfterThis,NoIndentAfterEnv,NoIndentAfterCmd
+  NoIndentAfterThis,NoIndentAfterEnv,NoIndentAfterCmd
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,10 +79,10 @@ This is the most primitive macro offered by the package. It forces a
 paragraph break and suppresses indentation for whatever follows:
 
 \begin{latex-example-show}
-	Lorem ipsum dolor sit amet, consectetur adipiscing
-	elit. \NoIndentAfterThis Pellentesque hendrerit volutpat
-	feugiat. Ut purus leo, pulvinar sit amet vehicula non,
-	pulvinar eu lacus. Curabitur id mollis ligula.
+  Lorem ipsum dolor sit amet, consectetur adipiscing
+  elit. \NoIndentAfterThis Pellentesque hendrerit volutpat
+  feugiat. Ut purus leo, pulvinar sit amet vehicula non,
+  pulvinar eu lacus. Curabitur id mollis ligula.
 \end{latex-example-show}
 
 
@@ -99,29 +99,29 @@ name. After using this command, any paragraph following such
 an environment will remain unindented.
 
 \begin{latex-example-show}
-	Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-	
-	\begin{itemize}
-	  \item First Item
-	  \item Second Item
-	\end{itemize}
-	
-	Pellentesque hendrerit volutpat feugiat. Ut purus
-	leo, pulvinar sit amet vehicula non, pulvinar eu
-	lacus. Curabitur id mollis ligula.
-	
-	\NoIndentAfterEnv{itemize}
-	
-	Vestibulum id erat venenatis, facilisis enim non,
-	consectetur felis. Quisque iaculis eu arcu non pretium.
-	
-	\begin{itemize}
-	  \item Third Item
-	  \item Fourth Item
-	\end{itemize}
-	
-	Curabitur est elit, posuere pulvinar laoreet sed, varius
-	id mi. Nam lobortis elit nec mauris condimentum gravida.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  
+  \begin{itemize}
+    \item First Item
+    \item Second Item
+  \end{itemize}
+  
+  Pellentesque hendrerit volutpat feugiat. Ut purus
+  leo, pulvinar sit amet vehicula non, pulvinar eu
+  lacus. Curabitur id mollis ligula.
+  
+  \NoIndentAfterEnv{itemize}
+  
+  Vestibulum id erat venenatis, facilisis enim non,
+  consectetur felis. Quisque iaculis eu arcu non pretium.
+  
+  \begin{itemize}
+    \item Third Item
+    \item Fourth Item
+  \end{itemize}
+  
+  Curabitur est elit, posuere pulvinar laoreet sed, varius
+  id mi. Nam lobortis elit nec mauris condimentum gravida.
 \end{latex-example-show}
 
 You'll probably want to use these commands in the document
@@ -133,16 +133,16 @@ environment is not the same as adding |\NoIndentAfterThis|
 to the end of it:
 
 \begin{latex-example-show}
-	\newenvironment{test}{\itshape}{\NoIndentAfterThis}
-	
-	\begin{test}
-	    Lorem ipsum dolor sit amet, consectetur
-	    adipiscing elit.
-	\end{test}
-	
-	Pellentesque hendrerit volutpat feugiat. Ut purus
-	leo, pulvinar sit amet vehicula non, pulvinar eu
-	lacus. Curabitur id mollis ligula.
+  \newenvironment{test}{\itshape}{\NoIndentAfterThis}
+  
+  \begin{test}
+      Lorem ipsum dolor sit amet, consectetur
+      adipiscing elit.
+  \end{test}
+  
+  Pellentesque hendrerit volutpat feugiat. Ut purus
+  leo, pulvinar sit amet vehicula non, pulvinar eu
+  lacus. Curabitur id mollis ligula.
 \end{latex-example-show}
 
 |\NoIndentAfterEnv| works because it bypasses the group
@@ -158,18 +158,18 @@ Finally, you may also patch command sequences using the
 where this is useful, but for me, there is at least one:
 
 \begin{latex-example-show}
-	Lorem ipsum dolor sit amet, consectetur adipiscing elit:
-	
-	\[ 1 + 1 = 2 \]
-	
-	Pellentesque hendrerit volutpat feugiat. Ut purus leo:
-	
-	\NoIndentAfterCmd \]
-	
-	\[ 2 + 2 = 4 \]
-	
-	Vestibulum id erat venenatis, facilisis enim non,
-	consectetur felis.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit:
+  
+  \[ 1 + 1 = 2 \]
+  
+  Pellentesque hendrerit volutpat feugiat. Ut purus leo:
+  
+  \NoIndentAfterCmd \]
+  
+  \[ 2 + 2 = 4 \]
+  
+  Vestibulum id erat venenatis, facilisis enim non,
+  consectetur felis.
 \end{latex-example-show}
 
 Note that braces around the \meta{command} argument are

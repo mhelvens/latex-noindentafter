@@ -86,8 +86,8 @@
     \small
     \begin{center}
       Development of this package is organized at
-      \href{http://latex-\packagename.googlecode.com}
-                  {latex-\packagename.googlecode.com}.\\
+      \href{https://github.com/mhelvens/latex-noindentafter}
+                  {github.com/mhelvens/latex-noindentafter}.\\
       I am happy to receive feedback there!
     \end{center}
   \end{bannerframe}
@@ -286,12 +286,12 @@
 
 \newcommand{\describemacro}[2]{%
   \needspace{3\baselineskip}%
-  \noindent\\\DescribeMacro{#1} #2\\%
+  \noindent\\\DescribeMacro{#1} #2\par\medskip%
 }
 
 \newcommand{\describemetamacro}[2]{%
   \needspace{3\baselineskip}%
-  \noindent\\\marginnote{\meta{#1}} #2\\%
+  \noindent\\\marginnote{\meta{#1}} #2\par\medskip%
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
