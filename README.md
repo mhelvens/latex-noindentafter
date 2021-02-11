@@ -1,9 +1,9 @@
 latex-noindentafter
 ===============
 
-LaTeX Package : noindentafter 0.2.2
+LaTeX Package : noindentafter 0.3.0
 
-Last Modified : 2014/11/30
+Last Modified : 2021/02/11
 
 Author        : Michiel Helvensteijn  (www.mhelvens.net)
 

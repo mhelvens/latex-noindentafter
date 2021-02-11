@@ -47,7 +47,7 @@
 %
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{noindentafter}[2014/11/30 0.2.2
+\ProvidesPackage{noindentafter}[2021/02/11 0.3.0
   prevent paragraph indentation after specific environments or macros]
 %    \end{macrocode}
 %
@@ -143,8 +143,8 @@
   % \needspace{5\baselineskip}\begin{macro}{\NoIndentAfterEnv}
 %%% \marg{environment}\par\medskip
 %
-%  \noindent Append |\@NoIndentAfterEnv| to the output of
-%  \meta{environment} by using the environment hook.
+%  \noindent Append |\@NoIndentAfterEnv| to the very end of
+%  \meta{environment}.
 %  
 % 
 %    \begin{macrocode}
