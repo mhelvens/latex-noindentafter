@@ -1,6 +1,8 @@
 latex-noindentafter
 ===============
 
+> &#x26a0;&#xfe0f;&nbsp;&nbsp; **NOTE:** This package is now being maintained at https://github.com/mrpiggi/noindentafter
+
 LaTeX Package : noindentafter 0.2.2
 
 Last Modified : 2014/11/30
